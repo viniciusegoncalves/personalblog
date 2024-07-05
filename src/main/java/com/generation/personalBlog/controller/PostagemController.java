@@ -2,6 +2,7 @@ package com.generation.personalBlog.controller;
 
 import com.generation.personalBlog.model.Postagem;
 import com.generation.personalBlog.repository.PostagemRepository;
+import com.generation.personalBlog.repository.TemaRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,9 @@ public class PostagemController {
     @Autowired
     private PostagemRepository postagemRepository;
 
+    @Autowired
+    private TemaRepository temaRepository;
+
     @GetMapping
     public ResponseEntity<List<Postagem>> getAll() {
         return ResponseEntity.ok(postagemRepository.findAll());
@@ -27,8 +31,15 @@ public class PostagemController {
 
     @PostMapping
     public ResponseEntity<Postagem> post(@Valid @RequestBody Postagem postagem) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(postagemRepository.save(postagem));
+        if(postagemRepository.existsById(postagem.getId())) {
+            if(temaRepository.existsById(postagem.getTema().getId()))
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body(postagemRepository.save(postagem));
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 //    @GetMapping("/{id}")

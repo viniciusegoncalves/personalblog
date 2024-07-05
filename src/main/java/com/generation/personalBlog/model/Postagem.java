@@ -1,5 +1,6 @@
 package com.generation.personalBlog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotBlank;
@@ -32,5 +33,9 @@ public class Postagem {
 
     @UpdateTimestamp
     private LocalDateTime data;
+
+    @ManyToOne
+    @JsonIgnoreProperties("Postagem")
+    private Tema tema;
 
 }
