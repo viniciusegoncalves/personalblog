@@ -31,27 +31,13 @@ public class PostagemController {
 
     @PostMapping
     public ResponseEntity<Postagem> post(@Valid @RequestBody Postagem postagem) {
-        if(postagemRepository.existsById(postagem.getId())) {
             if(temaRepository.existsById(postagem.getTema().getId()))
                 return ResponseEntity.status(HttpStatus.CREATED)
                         .body(postagemRepository.save(postagem));
 
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
-        }
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Postagem> getById(@PathVariable Long id) {
-//        Optional<Postagem> postagem = postagemRepository.findById(id);
-//
-//        if(postagem.isPresent()){
-//            return ResponseEntity.ok(postagem.get());
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Postagem> getById(@PathVariable Long id){
